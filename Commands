@@ -1,0 +1,140 @@
+# List topics
+kafka-topics --list --bootstrap-server localhost:29092
+
+# Create topic
+kafka-topics --create --topic data --bootstrap-server localhost:29092
+
+# Create topic with specific partitions and replication factor
+kafka-topics --create --topic data --bootstrap-server localhost:29092 --partitions 3 --replication-factor 1
+
+# Alter topic partitions and replication factor
+kafka-topics --topic data --alter --bootstrap-server localhost:29092 --partitions 4 --replication-factor 2
+
+# Describe topic
+kafka-topics --describe --topic data --bootstrap-server localhost:29092
+
+# Create topic with configuration (e.g., max.message.bytes)
+kafka-topics --create --topic data --bootstrap-server localhost:29092 --partitions 3 --replication-factor 1 --config max.message.bytes=12345
+
+# Alter topic configuration (e.g., max.message.bytes)
+kafka-configs --alter --bootstrap-server localhost:29092 --entity-type topics --entity-name data --add-config max.message.bytes=12345678
+
+# Delete topic configuration (e.g., max.message.bytes)
+kafka-configs --alter --bootstrap-server localhost:29092 --entity-type topics --entity-name data --delete-config max.message.bytes
+
+# List topics excluding internal topics
+kafka-topics --bootstrap-server localhost:9092 --list --exclude-internal
+
+# Set minimum in-sync replicas (min.insync.replicas)
+kafka-configs --bootstrap-server localhost:29092 --alter --entity-type topics --entity-name data --add-config min.insync.replicas=2
+
+# Describe topics with min.insync.replicas setting
+kafka-topics --describe --bootstrap-server localhost:29092 --at-min-isr-partitions
+
+# Describe partitions without leaders
+kafka-topics --describe --bootstrap-server localhost:29092 --unavailable-partitions
+
+# Describe topics under min.insync.replicas setting
+kafka-topics --describe --bootstrap-server localhost:29092 --under-min-isr-partitions
+
+# Describe under-replicated partitions
+kafka-topics --describe --bootstrap-server localhost:29092 --under-replicated-partitions
+
+# Produce messages to a topic
+kafka-console-producer --topic data --bootstrap-server localhost:29092
+
+# Produce messages with key
+kafka-console-producer --topic data --bootstrap-server localhost:29092 --property parse.key=true --property key.separator=:
+
+# Consume messages from a topic
+kafka-console-consumer --topic data --bootstrap-server localhost:29092
+
+# Consume messages from a specific partition
+kafka-console-consumer --topic data --bootstrap-server localhost:29092 --partition 0
+
+# Consume all messages from the beginning
+kafka-console-consumer --topic data --bootstrap-server localhost:29092 --from-beginning
+
+# Consume from specific partition from the beginning
+kafka-console-consumer --topic data --bootstrap-server localhost:29092 --partition 0 --offset earliest
+
+# Get offsets for a topic
+kafka-console-consumer --topic data --bootstrap-server localhost:29092
+
+# Consume messages with timestamps
+kafka-console-consumer --topic data --bootstrap-server localhost:29092 --from-beginning --property print.timestamp=true
+
+# Consume messages with keys
+kafka-console-consumer --topic data --bootstrap-server localhost:29092 --from-beginning --property print.key=true
+
+# Consume messages with keys and custom separator
+kafka-console-consumer --topic data --bootstrap-server localhost:29092 --from-beginning --property print.key=true --property key.separator=:
+
+# Consume messages with headers
+kafka-console-consumer --topic data --bootstrap-server localhost:29092 --from-beginning --property print.headers=true --property headers.separator=:
+
+# Consume messages with custom line separator
+kafka-console-consumer --topic data --bootstrap-server localhost:29092 --from-beginning --property line.separator=:
+
+# Consume messages with partition and offset
+kafka-console-consumer --topic data --bootstrap-server localhost:29092 --from-beginning --property print.partitions=true --property print.offset=true
+
+# Consume messages with a consumer group
+kafka-console-consumer --topic data --bootstrap-server localhost:29092 --group test_group
+
+# Delete a consumer group
+kafka-consumer-groups --bootstrap-server localhost:29092 --delete --group test_group
+
+# Consume messages from a consumer group from the beginning
+kafka-console-consumer --topic data --bootstrap-server localhost:29092 --group test_group --from-beginning
+
+# Describe a consumer group
+kafka-consumer-groups --describe --bootstrap-server localhost:29092 --group test_group
+
+# Reset consumer group offsets to earliest
+kafka-consumer-groups --bootstrap-server localhost:29092 --group test_group --reset-offsets --to-earliest --execute --topic data
+
+# Reset consumer group offsets to current time
+kafka-consumer-groups --bootstrap-server localhost:29092 --group test_group --reset-offsets --to-current --execute --topic data
+
+# Reset consumer group offsets by shift
+kafka-consumer-groups --bootstrap-server localhost:29092 --reset-offsets --shift-by -2 --execute --topic data --group test_group
+
+# Reset consumer group offsets by duration
+kafka-consumer-groups --bootstrap-server localhost:29092 --reset-offsets --by-duration PT1H30M20S --execute --topic data --group test_group
+
+# List consumer groups by state
+kafka-consumer-groups --bootstrap-server localhost:29092 --list --state
+
+# Describe all consumer groups
+kafka-consumer-groups --bootstrap-server localhost:29092 --describe --all-groups --state
+
+# Delete offsets for a specific topic and group
+kafka-consumer-groups --bootstrap-server localhost:29092 --delete-offsets --group test_group --topic data
+
+# Allow unclean leader election
+kafka-configs --bootstrap-server localhost:29092 --alter --entity-type topics --entity-name data --add-config unclean.leader.election.enable=true
+
+# Set topic retention and cleanup policies
+kafka-configs --bootstrap-server localhost:29092 --alter --entity-type topics --entity-name data --add-config retention.ms=-1,retention.bytes=123456
+
+# Produce messages with acknowledgment level (acks)
+kafka-console-producer --topic data --bootstrap-server localhost:29092 --producer-property acks=all (acks=0,acks=1,acks=-1)
+
+# Describe topic configurations
+kafka-configs --bootstrap-server localhost:29092 --describe --entity-type topics --entity-name data
+
+# Set min.insync.replicas for brokers
+kafka-configs --bootstrap-server localhost:29092 --alter --entity-type brokers --entity-default --add-config min.insync.replicas=2
+
+# Set topic cleanup policy to compact for log compaction
+kafka-configs --bootstrap-server localhost:29092 --alter --entity-type topics --entity-name data --add-config cleanup.policy=compact
+
+# Set topic cleanup policy to delete
+kafka-configs --bootstrap-server localhost:29092 --alter --entity-type topics --entity-name data --add-config cleanup.policy=delete
+
+# Set various topic retention and cleanup configurations
+kafka-configs --bootstrap-server localhost:29092 --alter --entity-type topics --entity-name data --add-config cleanup.policy=delete,retention.ms=12000,delete.retention.ms=13000,segment.ms=20000,segment.bytes=12345,min.cleanable.dirty.ratio=0.001
+
+# Set broker-level log cleanup policies
+kafka-configs --bootstrap-server localhost:29092 --alter --entity-type brokers --entity-default --add-config cleanup.policy=delete,cleaner.enable=true,cleaner.backoff.ms=7000,cleaner.min.compaction.ms=10000,cleaner.delete.retention.ms=12000
