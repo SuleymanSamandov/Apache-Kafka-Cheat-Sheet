@@ -1,2 +1,2 @@
-# Apache-Kafka-Cheat-Sheat
+# Apache-Kafka-Cheat-Sheet
 Commands for Apache Kafka
