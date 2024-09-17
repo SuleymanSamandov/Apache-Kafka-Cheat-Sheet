@@ -62,22 +62,22 @@ kafka-console-consumer --topic data --bootstrap-server localhost:29092 --partiti
 kafka-console-consumer --topic data --bootstrap-server localhost:29092
 
 # Consume messages with timestamps
-kafka-console-consumer --topic data --bootstrap-server localhost:29092 --from-beginning --property print.timestamp=true
+kafka-console-consumer --topic data --bootstrap-server localhost:29092 --property print.timestamp=true
 
 # Consume messages with keys
-kafka-console-consumer --topic data --bootstrap-server localhost:29092 --from-beginning --property print.key=true
+kafka-console-consumer --topic data --bootstrap-server localhost:29092 --property print.key=true
 
 # Consume messages with keys and custom separator
-kafka-console-consumer --topic data --bootstrap-server localhost:29092 --from-beginning --property print.key=true --property key.separator=:
+kafka-console-consumer --topic data --bootstrap-server localhost:29092 --property print.key=true --property key.separator=:
 
 # Consume messages with headers
-kafka-console-consumer --topic data --bootstrap-server localhost:29092 --from-beginning --property print.headers=true --property headers.separator=:
+kafka-console-consumer --topic data --bootstrap-server localhost:29092 --property print.headers=true --property headers.separator=:
 
 # Consume messages with custom line separator
-kafka-console-consumer --topic data --bootstrap-server localhost:29092 --from-beginning --property line.separator=:
+kafka-console-consumer --topic data --bootstrap-server localhost:29092 --property line.separator=:
 
 # Consume messages with partition and offset
-kafka-console-consumer --topic data --bootstrap-server localhost:29092 --from-beginning --property print.partitions=true --property print.offset=true
+kafka-console-consumer --topic data --bootstrap-server localhost:29092 --property print.partitions=true --property print.offset=true
 
 # Consume messages with a consumer group
 kafka-console-consumer --topic data --bootstrap-server localhost:29092 --group test_group
@@ -137,4 +137,25 @@ kafka-configs --bootstrap-server localhost:29092 --alter --entity-type topics --
 kafka-configs --bootstrap-server localhost:29092 --alter --entity-type topics --entity-name data --add-config cleanup.policy=delete,retention.ms=12000,delete.retention.ms=13000,segment.ms=20000,segment.bytes=12345,min.cleanable.dirty.ratio=0.001
 
 # Set broker-level log cleanup policies
-kafka-configs --bootstrap-server localhost:29092 --alter --entity-type brokers --entity-default --add-config cleanup.policy=delete,cleaner.enable=true,cleaner.backoff.ms=7000,cleaner.min.compaction.ms=10000,cleaner.delete.retention.ms=12000
+kafka-configs --bootstrap-server localhost:29092 --alter --entity-type brokers --entity-default --add-config cleanup.policy=compact,cleaner.enable=true,cleaner.backoff.ms=7000,cleaner.min.compaction.ms=10000,cleaner.delete.retention.ms=12000
+
+# Max message size for producer
+kafka-console-producer --topic data --bootstrap-server localhost:29092 --producer-property max.request.size=123456
+
+# Max message size for consumer
+kafka-console-consumer --topic data --bootstrap-server localhost:29092 --consumer-property max.partitions.fetch.bytes=123456
+
+# Max message for replica
+kafka-configs --bootstrap-server localhost:29092 --alter --entity-type brokers --entity-default --add-config replcia.max.fetch.bytes=134253
+
+# Specifies the maximum number of requests processed per connection
+kafka-console-consumer --topic data --bootstrap-server localhost:29092 --consumer-property max.in.flight.request.per.connection=42421
+
+# Sets the maximum time for sending a message
+kafka-console-producer --topic data --bootstrap-server localhost:29092 --producer-property delivery.timeout.ms=131324
+
+# Sets the number of seconds after which the message should be sent after an error occurs.
+kafka-console-producer --topic data --bootstrap-server localhost:29092 --producer-property retry.backoff.ms=34395
+
+# Enable auto commit with custom interval
+kafka-console-consumer --topic data --bootstrap-server localhost:29092 --consumer-property enable.auto.commit=true --consumer-property auto.commit.interval.ms=24242
